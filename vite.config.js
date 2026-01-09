@@ -12,6 +12,7 @@ export default defineConfig({
         enabled: true
       },
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+      manifestFilename: 'manifest.json',
       manifest: {
         name: 'HabitFlow',
         short_name: 'HabitFlow',

@@ -1,5 +1,61 @@
 import React, { useState, useEffect } from 'react';
 
+// TimePicker Component
+const TimePicker = ({ label, value, onChange, icon }) => {
+    const handleInputChange = (field, val) => {
+        if (val && !/^\d*$/.test(val)) return;
+        if (val.length > 2) return;
+        onChange({ ...value, [field]: val });
+    };
+
+    return (
+        <div>
+            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5 flex items-center gap-2">
+                <span>{icon}</span> {label}
+            </label>
+            <div className="flex gap-2 items-center">
+                <input
+                    type="text"
+                    placeholder="HH"
+                    value={value.h}
+                    onChange={(e) => handleInputChange('h', e.target.value)}
+                    onBlur={(e) => {
+                        let val = parseInt(e.target.value);
+                        if (isNaN(val) || val < 1) val = 1;
+                        if (val > 12) val = 12;
+                        onChange({ ...value, h: String(val) });
+                    }}
+                    className="w-20 h-12 rounded-xl border-gray-300 dark:border-gray-600 border shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-xl text-center font-bold bg-white dark:bg-gray-700 text-gray-800 dark:text-white transition-all placeholder:font-normal"
+                    maxLength={2}
+                />
+                <span className="text-xl font-bold text-gray-400 dark:text-gray-500 pb-1">:</span>
+                <input
+                    type="text"
+                    placeholder="MM"
+                    value={value.m}
+                    onChange={(e) => handleInputChange('m', e.target.value)}
+                    onBlur={(e) => {
+                        let val = parseInt(e.target.value);
+                        if (isNaN(val) || val < 0) val = 0;
+                        if (val > 59) val = 59;
+                        onChange({ ...value, m: String(val).padStart(2, '0') });
+                    }}
+                    className="w-20 h-12 rounded-xl border-gray-300 dark:border-gray-600 border shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-xl text-center font-bold bg-white dark:bg-gray-700 text-gray-800 dark:text-white transition-all placeholder:font-normal"
+                    maxLength={2}
+                />
+                <select
+                    value={value.p}
+                    onChange={(e) => onChange({ ...value, p: e.target.value })}
+                    className="w-24 h-12 rounded-xl border-gray-300 dark:border-gray-600 border shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-lg font-bold bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-white cursor-pointer transition-all"
+                >
+                    <option value="AM">AM</option>
+                    <option value="PM">PM</option>
+                </select>
+            </div>
+        </div>
+    );
+};
+
 const SleepForm = ({ dateStr, initialData, onSave, onCancel }) => {
     // Internal state for 12-hour format handling
     const [startState, setStartState] = useState({ h: '10', m: '00', p: 'PM' });
@@ -73,61 +129,7 @@ const SleepForm = ({ dateStr, initialData, onSave, onCancel }) => {
         });
     };
 
-    // TimePicker Component
-    const TimePicker = ({ label, value, onChange, icon }) => {
-        const handleInputChange = (field, val) => {
-            if (val && !/^\d*$/.test(val)) return;
-            if (val.length > 2) return;
-            onChange({ ...value, [field]: val });
-        };
 
-        return (
-            <div>
-                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5 flex items-center gap-2">
-                    <span>{icon}</span> {label}
-                </label>
-                <div className="flex gap-2 items-center">
-                    <input
-                        type="text"
-                        placeholder="HH"
-                        value={value.h}
-                        onChange={(e) => handleInputChange('h', e.target.value)}
-                        onBlur={(e) => {
-                            let val = parseInt(e.target.value);
-                            if (isNaN(val) || val < 1) val = 1;
-                            if (val > 12) val = 12;
-                            onChange({ ...value, h: String(val) });
-                        }}
-                        className="w-20 h-12 rounded-xl border-gray-300 dark:border-gray-600 border shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-xl text-center font-bold bg-white dark:bg-gray-700 text-gray-800 dark:text-white transition-all placeholder:font-normal"
-                        maxLength={2}
-                    />
-                    <span className="text-xl font-bold text-gray-400 dark:text-gray-500 pb-1">:</span>
-                    <input
-                        type="text"
-                        placeholder="MM"
-                        value={value.m}
-                        onChange={(e) => handleInputChange('m', e.target.value)}
-                        onBlur={(e) => {
-                            let val = parseInt(e.target.value);
-                            if (isNaN(val) || val < 0) val = 0;
-                            if (val > 59) val = 59;
-                            onChange({ ...value, m: String(val).padStart(2, '0') });
-                        }}
-                        className="w-20 h-12 rounded-xl border-gray-300 dark:border-gray-600 border shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-xl text-center font-bold bg-white dark:bg-gray-700 text-gray-800 dark:text-white transition-all placeholder:font-normal"
-                        maxLength={2}
-                    />
-                    <select
-                        value={value.p}
-                        onChange={(e) => onChange({ ...value, p: e.target.value })}
-                        className="w-24 h-12 rounded-xl border-gray-300 dark:border-gray-600 border shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-lg font-bold bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-white cursor-pointer transition-all"
-                    >
-                        <option value="AM">AM</option>
-                        <option value="PM">PM</option>
-                    </select>
-                </div>
-            </div>
-        );
-    };
 
     return (
         <form onSubmit={handleSubmit} className="space-y-8">
